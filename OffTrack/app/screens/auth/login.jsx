@@ -24,7 +24,7 @@ export default function Register() {
                     <Text style={styles.pressableText}>Password</Text>
                 </Pressable>
 
-                <Pressable style={styles.pressableCreate} > 
+                <Pressable style={styles.pressableCreate} onPress={() => router.push("/screens/tabs/home")} > 
                     <Text style={styles.pressableTextCreate}>LOGIN</Text>
                 </Pressable>
 

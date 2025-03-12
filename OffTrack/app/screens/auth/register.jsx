@@ -17,19 +17,19 @@ export default function Register() {
                 />
 
                 <Pressable style={styles.pressable}>
-                    <Text style={styles.pressableText}>     Email Adress     </Text>
+                    <Text style={styles.pressableText}>Email Adress</Text>
                 </Pressable>
 
                 <Pressable style={styles.pressable}> 
-                    <Text style={styles.pressableText}>       Password          </Text>
+                    <Text style={styles.pressableText}>Password</Text>
                 </Pressable>
 
                 <Pressable style={styles.pressable} > 
                     <Text style={styles.pressableText}>Comfirm Password</Text>
                 </Pressable>
 
-                <Pressable style={styles.pressableCreate} > 
-                    <Text style={styles.pressableTextCreate}>   Create Account   </Text>
+                <Pressable style={styles.pressableCreate} onPress={() => router.push('/screens/tabs/home')}> 
+                    <Text style={styles.pressableTextCreate}>Create Account</Text>
                 </Pressable>
 
                 <Text style={styles.text}>Already have an account? Sign in</Text>
