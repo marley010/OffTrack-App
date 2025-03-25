@@ -16,7 +16,7 @@ export default function HomeScreen() {
         data={DATA}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push('/screens/tabs/search')}>
+          <TouchableOpacity onPress={() => router.push('/screens/tabs/add')}>
             <View style={styles.card}>
               <Image source={item.image} style={styles.image} />
               <Text style={styles.text}>{item.title}</Text>
