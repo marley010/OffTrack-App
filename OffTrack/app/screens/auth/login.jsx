@@ -1,8 +1,39 @@
-import { View, Text, StyleSheet, Pressable, Image, ImageBackground } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Pressable, Image, ImageBackground, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Register() {
+
+export default function Login() {
     const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Foutmelding", "Vul alle velden in!");
+            return;
+        }
+
+        try {
+            const userData = await AsyncStorage.getItem('user');
+            if (!userData) {
+                Alert.alert("Foutmelding", "Geen account gevonden. Registreer eerst!");
+                return;
+            }
+
+            const { email: storedEmail, password: storedPassword } = JSON.parse(userData);
+
+            if (email === storedEmail && password === storedPassword) {
+                Alert.alert("Succes", "Inloggen gelukt!");
+                router.push('/screens/tabs/home'); // Navigeer naar home
+            } else {
+                Alert.alert("Foutmelding", "Onjuiste e-mail of wachtwoord!");
+            }
+        } catch (error) {
+            Alert.alert("Fout", "Er is iets misgegaan. Probeer opnieuw.");
+        }
+    };
 
     return (
         <ImageBackground 
@@ -16,19 +47,32 @@ export default function Register() {
                     resizeMode="contain" 
                 />
 
-                <Pressable style={styles.pressable}>
-                    <Text style={styles.pressableText}>Email Adress</Text>
-                </Pressable>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email Address"
+                    placeholderTextColor="#999"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
+                />
 
-                <Pressable style={styles.pressable}> 
-                    <Text style={styles.pressableText}>Password</Text>
-                </Pressable>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor="#999"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
 
-                <Pressable style={styles.pressableCreate} onPress={() => router.push("/screens/tabs/home")} > 
+                <Pressable style={styles.pressableCreate} onPress={handleLogin}> 
                     <Text style={styles.pressableTextCreate}>LOGIN</Text>
                 </Pressable>
 
-                <Text style={styles.text}>Don't have a account? Sign up</Text>
+                <TouchableOpacity onPress={() => router.push('/register')}>
+                    <Text style={styles.text}>Don't have an account? Sign up</Text>
+                </TouchableOpacity>
             </View>
         </ImageBackground>
     );
@@ -57,31 +101,25 @@ const styles = StyleSheet.create({
         left: 10, 
     },
     text: {
-        alignItems: "center",
         paddingTop: 30,
-        fontSize: 8,
+        fontSize: 14,
         color: "white",
-        width: "70%",
-        alignSelf: "flex-start",
-        paddingLeft: 71,
-        letterSpacing: 2
+        textAlign: "center",
+        textDecorationLine: "underline",
     },
-    pressable: {
+    input: {
         backgroundColor: "white",
-        width: 300, // Gelijke breedte voor alle knoppen
+        width: 300,
         paddingVertical: 10,
         borderRadius: 20, 
         marginVertical: 10,
-        alignItems: "center",
-    },
-    pressableText: {
+        textAlign: "center",
+        fontSize: 16,
         color: "black",
-        fontSize: 18,
-        fontWeight: "bold",
     },
     pressableCreate: {
         backgroundColor: "black",
-        width: 300, // Gelijke breedte voor alle knoppen
+        width: 300, 
         paddingVertical: 10,
         borderRadius: 20, 
         marginVertical: 10,

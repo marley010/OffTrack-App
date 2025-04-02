@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable, Image, ImageBackground, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Pressable, Image, ImageBackground, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';  // Zorg ervoor dat AsyncStorage wordt geïmporteerd
 
 export default function Register() {
     const router = useRouter();
@@ -8,9 +9,13 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!email || !password || !confirmPassword) {
             Alert.alert("Foutmelding", "Alle velden moeten ingevuld zijn!");
+            return;
+        }
+        if (password.length < 6) {
+            Alert.alert("Foutmelding", "Wachtwoord moet minimaal 6 tekens lang zijn!");
             return;
         }
         if (password !== confirmPassword) {
@@ -18,10 +23,21 @@ export default function Register() {
             return;
         }
 
-        // Hier kun je de registratie-logica toevoegen, bijvoorbeeld een API-aanroep.
-
-        Alert.alert("Succes", "Account is aangemaakt!");
-        router.push('/screens/tabs/home');
+        try {
+            // Gebruikersgegevens opslaan in AsyncStorage
+            await AsyncStorage.setItem('user', JSON.stringify({ email, password }));
+            
+            // Log de opgeslagen gegevens om te controleren of het goed werkt
+            const storedUser = await AsyncStorage.getItem('user');
+            console.log("Stored user data:", storedUser);  // Controleer in de console of de gegevens goed worden opgeslagen
+            
+            Alert.alert("Succes", "Account is aangemaakt!");
+            router.push('/screens/auth/login'); // Gebruik de volledige padnaam
+        } catch (error) {
+            // Log de fout in de console voor debuggen
+            console.error("Error during registration:", error);
+            Alert.alert("Fout", "Er is iets misgegaan. Probeer het opnieuw.");
+        }
     };
 
     return (
@@ -68,7 +84,9 @@ export default function Register() {
                     <Text style={styles.pressableTextCreate}>Create Account</Text>
                 </Pressable>
 
-                <Text style={styles.text}>Already have an account? Sign in</Text>
+                <TouchableOpacity onPress={() => router.push('/login')}>
+                    <Text style={styles.text}>Already have an account? Sign in</Text>
+                </TouchableOpacity>
             </View>
         </ImageBackground>
     );
@@ -98,9 +116,10 @@ const styles = StyleSheet.create({
     },
     text: {
         paddingTop: 30,
-        fontSize: 12,
+        fontSize: 14,
         color: "black",
         textAlign: "center",
+        textDecorationLine: "underline",
     },
     input: {
         backgroundColor: "white",
