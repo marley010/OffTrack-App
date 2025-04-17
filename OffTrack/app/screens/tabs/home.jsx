@@ -2,9 +2,9 @@ import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react
 import { useRouter } from 'expo-router';
 
 const DATA = [
-  { id: 1, title: '', image: require("../../../assets/images/barcelona.png") },
-  { id: 2, title: '', image: require("../../../assets/images/newYork.png") },
-  { id: 3, title: '', image: require("../../../assets/images/tokyo.png") },
+  { id: 1, title: 'Barcelona', image: require("../../../assets/images/barcelona.png") },
+  { id: 2, title: 'New York', image: require("../../../assets/images/newYork.png") },
+  { id: 3, title: 'Tokyo', image: require("../../../assets/images/tokyo.png") },
 ];
 
 export default function HomeScreen() {
@@ -12,18 +12,21 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={DATA}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push('/screens/tabs/add')}>
-            <View style={styles.card}>
-              <Image source={item.image} style={styles.image} />
-              <Text style={styles.text}>{item.title}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+  <FlatList
+  data={DATA}
+  keyExtractor={item => item.id.toString()}
+  renderItem={({ item }) => (
+    <TouchableOpacity 
+      onPress={() => router.push({ pathname: '/screens/tabs/tripsdetail', params: { city: item.title } })}
+    >
+      <View style={styles.card}>
+        <Image source={item.image} style={styles.image} />
+        <Text style={styles.text}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
+  )}
+/>
+
     </View>
   );
 }
@@ -43,7 +46,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 330,
-    height:150,
+    height: 150,
     borderRadius: 10,
     marginBottom: 10,
   },
